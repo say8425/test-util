@@ -4,8 +4,12 @@ on:
     types:
      - published
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  release-npm:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,7 +32,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Release to NPM Registry
+      - name: Release to GitHub Package Registry
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
