@@ -17,11 +17,13 @@ jobs:
           node-version: 18
           cache: pnpm
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-
+      # pnpm should be preinstalled before the setup-node action
+      # https://github.com/actions/setup-node/issues/530#issuecomment-1169317505
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
 
       - name: Build
         run: pnpm build
