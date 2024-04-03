@@ -1,0 +1,1 @@
+export { upToScroll } from "./upToScroll";
