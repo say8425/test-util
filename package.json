@@ -1,7 +1,6 @@
 {
   "name": "test-util",
   "version": "0.0.0",
-  "private": true,
   "type": "module",
   "main": "./dist/main.umd.cjs",
   "module": "./dist/main.js",
