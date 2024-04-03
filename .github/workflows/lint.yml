@@ -15,14 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # pnpm should be preinstalled before the setup-node action
+      # https://github.com/actions/setup-node/issues/530#issuecomment-1169317505
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+
       - name: Setup node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: pnpm
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
 
       - name: Install dependencies
         run: pnpm install
