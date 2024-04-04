@@ -15,15 +15,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Bump the package version without a commit
-        uses: phips28/gh-action-bump-version@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # pnpm should be preinstalled before the setup-node action
+      # https://github.com/actions/setup-node/issues/530#issuecomment-1169317505
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+
+      - name: Setup node.js
+        uses: actions/setup-node@v4
         with:
-          skip-tag: true
-          commit-message: 'CI: bumps version to {{version}}'
-          target-branch: 'main'
-          tag-prefix: 'v'
+          node-version: 18
+          cache: pnpm
+
+      - name: Bump the package version
+        run: |
+          pnpm version --no-git-tag-version from-git
+
+      - name: Commit the package version
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'package.json'
+          message: 'CI: bumps version to ${{ github.ref_name }}'
+          push: origin HEAD:main
 
   release:
     needs:
@@ -32,6 +44,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       # pnpm should be preinstalled before the setup-node action
       # https://github.com/actions/setup-node/issues/530#issuecomment-1169317505
@@ -61,9 +75,14 @@ jobs:
       - release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v4
         with:
-          configuration: "../changelog-config.json"
+          configuration: ".github/changelog-config.json"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
