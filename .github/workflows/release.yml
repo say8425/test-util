@@ -78,21 +78,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           ref: main
+          fetch-depth: 0
 
       - name: Get Previous tag
         id: previous-tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        with:
-          prefix: v
-          fallback: v0.1.0
+        run: |
+          tag=`gh release list --exclude-pre-releases --exclude-drafts --limit 2 | sed -n '2 p' | awk '{print $(NF -1);}'`
+          echo "$tag"
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v4
         with:
           configuration: ".github/changelog-config.json"
-          fromTag: ${{ steps.previous-tag.outputs.tag }}
+          fromTag: ${{ steps.previous-tag.outputs.TAG }}
           toTag: ${{ github.event.release.tag_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
