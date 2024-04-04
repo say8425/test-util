@@ -1,6 +1,6 @@
 {
   "name": "@say8425/test-util",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist/main.umd.cjs",
   "module": "./dist/main.js",
