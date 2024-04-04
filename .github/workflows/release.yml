@@ -2,14 +2,32 @@ name: Release
 on:
   release:
     types:
-     - published
+      - published
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Bump the package version without a commit
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          skip-tag: true
+          commit-message: 'CI: bumps version to {{version}}'
+          target-branch: 'main'
+          tag-prefix: 'v'
+
   release:
+    needs:
+      - bump-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -38,7 +56,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           registry: "https://npm.pkg.github.com"
 
-      - name: Run Changelog CI
-        uses: saadmk11/changelog-ci@v1.1.2
+  update-changelog:
+    needs:
+      - release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+        uses: mikepenz/release-changelog-builder-action@v4
         with:
-          release_version: ${{ github.ref_name }}
+          configuration: "../changelog-config.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
