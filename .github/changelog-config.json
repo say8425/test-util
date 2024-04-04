@@ -2,16 +2,25 @@
   "template": "#{{CHANGELOG}}",
   "categories": [
     {
-      "title": "## ⚡ Features",
-      "labels": ["⚡ feature"]
+      "title": "## ⚡️ Features",
+      "labels": ["⚡️ feature"]
     },
     {
       "title": "## 🛠 Fixes",
-      "labels": ["🐛 bug", "🚨 security", "❗error"]
+      "labels": [
+        "🐛 bug",
+        "🚨 security",
+        "❗error"
+      ]
     },
     {
       "title": "## 📦 Dependencies",
-      "labels": ["📦 dependencies", "📄 docs", "🏭 ci", "⚙ refactor"]
+      "labels": [
+        "📦 dependencies",
+        "📄 docs",
+        "🏭 ci",
+        "⚙ refactor"
+      ]
     }
   ]
 }
