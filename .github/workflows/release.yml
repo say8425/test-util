@@ -75,11 +75,10 @@ jobs:
       - release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout code to get the previous tag
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: main
 
       - name: Get Previous tag
         id: previous-tag
@@ -87,6 +86,11 @@ jobs:
         with:
           prefix: v
           fallback: v0.1.0
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v4
