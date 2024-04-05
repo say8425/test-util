@@ -1,5 +1,6 @@
 {
-  "template": "#{{CHANGELOG}}",
+  "template": "      #{{CHANGELOG}}",
+  "pr_template": "- #{{TITLE}} (##{{NUMBER}}) @#{{AUTHOR}}",
   "categories": [
     {
       "title": "## ⚡️ Features",
@@ -7,20 +8,11 @@
     },
     {
       "title": "## 🛠 Fixes",
-      "labels": [
-        "🐛 bug",
-        "🚨 security",
-        "❗error"
-      ]
+      "labels": ["🐛 bug", "🚨 security", "❗error"]
     },
     {
       "title": "## 📦 Dependencies",
-      "labels": [
-        "📦 dependencies",
-        "📄 docs",
-        "🏭 ci",
-        "⚙ refactor"
-      ]
+      "labels": ["📦 dependencies", "📄 docs", "🏭 ci", "⚙ refactor"]
     }
   ]
 }
