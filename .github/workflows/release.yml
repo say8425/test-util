@@ -34,7 +34,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           add: 'package.json'
-          message: 'CI: bumps version to ${{ github.ref_name }}'
+          message: 'ci: bumps version to ${{ github.ref_name }}'
           push: origin HEAD:main
 
   release:
@@ -88,11 +88,26 @@ jobs:
           echo "$tag"
           echo "TAG=$tag" >> $GITHUB_OUTPUT
 
+      -  name: Get First PR Commit
+         id: first-pr-commit
+         run: |
+           first_pr_number=`gh pr list --state merged --search sort:created-asc --limit 1 --json number --jq first.number`
+           first_pr_commit_sha=`gh pr view $first_pr_number --json mergeCommit --jq .mergeCommit.oid
+           echo "SHA=$first_pr_commit_sha" >> $GITHUB_OUTPUT
+
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v4
         with:
           configuration: ".github/changelog-config.json"
-          fromTag: ${{ steps.previous-tag.outputs.TAG }}
+          outputFile: "CHANGELOG.md"
+          fromTag: ${{ steps.previous-tag.outputs.TAG != '' && steps.previous-tag.outputs.TAG || steps.first-pr-commit.outputs.SHA }}
           toTag: ${{ github.event.release.tag_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: main
+          file_pattern: CHANGELOG.md
+          commit_message: "ci: update CHANGELOG for ${{ github.event.release.tag_name }}"
